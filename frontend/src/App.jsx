@@ -1,122 +1,79 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-function App() {
-  const [count, setCount] = useState(0)
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import { AnalysisProvider } from "./context/AnalysisContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+import DashboardLayout from "./layouts/DashboardLayout";
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
+import Inventory from "./pages/Inventory";
+import Upload from "./pages/Upload";
+import Analysis from "./pages/Analysis";
+import VerifyOtp from "./pages/VerifyOtp";
+import History from "./pages/History";
+import AnalysisDetails from "./pages/AnalysisDetails";
 
-      <div className="ticks"></div>
+// Milestone 3 — Sustainability Intelligence pages
+import SustainabilityDashboard from "./pages/SustainabilityDashboard";
+import EnvironmentalImpactPage from "./pages/EnvironmentalImpactPage";
+import CircularEconomyPage from "./pages/CircularEconomyPage";
+import WasteScoringPage from "./pages/WasteScoringPage";
+import RecommendationPage from "./pages/RecommendationPage";
+//import SustainabilityReportPage from "./pages/SustainabilityReportPage";
+import Profile from "./pages/Profile";
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+import RecyclerDashboard from "./pages/RecyclerDashboard";
+import ManufacturerDashboard from "./pages/ManufacturerDashboard";
+import AdminDashboard from "./pages/AdminDashboard";
+import ReportsCenter from "./pages/ReportsCenter";
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+function RootRedirect() {
+  const { isAuthenticated, loading } = useAuth();
+  if (loading) return null;
+  return <Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />;
 }
 
-export default App
+function App() {
+  return (
+    <AuthProvider>
+      <AnalysisProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<RootRedirect />} />
+
+            {/* Public routes */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/verify-otp" element={<VerifyOtp />} />
+
+            {/* Authenticated routes — persistent sidebar layout */}
+            <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/inventory" element={<Inventory />} />
+              <Route path="/upload" element={<Upload />} />
+              <Route path="/analysis" element={<Analysis />} />
+              <Route path="/history" element={<History />} />
+              <Route path="/analysis/:id" element={<AnalysisDetails />} />
+              <Route path="/profile" element={<Profile />} />
+
+              <Route path="/sustainability" element={<SustainabilityDashboard />} />
+              <Route path="/sustainability/environmental-impact" element={<EnvironmentalImpactPage />} />
+              <Route path="/sustainability/circular-economy" element={<CircularEconomyPage />} />
+              <Route path="/sustainability/waste-scoring" element={<WasteScoringPage />} />
+              <Route path="/sustainability/recommendations" element={<RecommendationPage />} />
+              {/* <Route path="/sustainability/report" element={<SustainabilityReportPage />} /> */}
+              <Route path="/analytics/recycler" element={<RecyclerDashboard />} />
+              <Route path="/analytics/manufacturer" element={<ManufacturerDashboard />} />
+              <Route path="/analytics/admin" element={<AdminDashboard />} />
+              <Route path="/reports" element={<ReportsCenter />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </AnalysisProvider>
+    </AuthProvider>
+  );
+}
+
+export default App;

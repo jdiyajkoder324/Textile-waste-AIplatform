@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root {
+  /* Base */
+  --ti-bg: #0F1319;
+  --ti-surface: #171D25;
+  --ti-surface-raised: #1D2530;
+  --ti-border: #262E38;
+
+  /* Accents — moss (recycled fiber) + raw wool gold */
+  --ti-moss: #8FB996;
+  --ti-moss-dim: #5F7D66;
+  --ti-gold: #D8B26E;
+  --ti-danger: #E2725B;
+
+  /* Text */
+  --ti-text: #EDEFF2;
+  --ti-text-muted: #8A93A3;
+  --ti-text-faint: #576070;
+
+  /* Type */
+  --ti-font-display: 'Fraunces', serif;
+  --ti-font-body: 'Inter', sans-serif;
+  --ti-font-mono: 'IBM Plex Mono', monospace;
+
+  --ti-radius: 10px;
+}

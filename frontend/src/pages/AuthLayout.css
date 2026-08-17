@@ -1,0 +1,278 @@
+@import "../styles/theme.css";
+
+:root {
+  --ti-bg: #F7F7F3;
+  --ti-surface: #FFFFFF;
+  --ti-surface-raised: #FBFBF9;
+  --ti-border: #E3E1D8;
+  --ti-moss: #2F6B4F;
+  --ti-moss-dim: #6B8F79;
+  --ti-gold: #A8721E;
+  --ti-danger: #B23B2E;
+  --ti-text: #16211C;
+  --ti-text-muted: #5C6B62;
+  --ti-text-faint: #8B968E;
+
+  --ti-font-display: 'Fraunces', serif;
+  --ti-font-body: 'Inter', sans-serif;
+  --ti-font-mono: 'IBM Plex Mono', monospace;
+
+  --ti-radius: 10px;
+}
+
+.ti-auth-shell {
+  min-height: 100vh;
+  display: flex;
+  background: var(--ti-bg);
+  font-family: var(--ti-font-body);
+  color: var(--ti-text);
+}
+
+/* -------------------- Left brand panel -------------------- */
+.ti-auth-brand {
+  position: relative;
+  flex: 1.1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 56px 56px 48px;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(143,185,150,0.10), transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(216,178,110,0.08), transparent 40%),
+    repeating-linear-gradient(45deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 12px),
+    repeating-linear-gradient(-45deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 12px);
+  border-right: 1px solid var(--ti-border);
+  overflow: hidden;
+}
+
+@media (max-width: 900px) {
+  .ti-auth-brand { display: none; }
+}
+
+.ti-brand-mark {
+  font-family: var(--ti-font-display);
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+.ti-brand-mark span {
+  color: var(--ti-moss);
+}
+
+.ti-brand-tag {
+  margin-top: 6px;
+  color: var(--ti-text-muted);
+  font-size: 13px;
+  font-family: var(--ti-font-mono);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.ti-spool-wrap {
+  align-self: center;
+  margin: auto 0;
+}
+
+.ti-thread-line {
+  stroke-dasharray: 6 6;
+  animation: ti-thread-move 3.5s linear infinite;
+}
+
+@keyframes ti-thread-move {
+  to { stroke-dashoffset: -240; }
+}
+
+.ti-brand-quote {
+  font-family: var(--ti-font-display);
+  font-size: 22px;
+  line-height: 1.45;
+  max-width: 380px;
+  color: var(--ti-text);
+}
+
+.ti-brand-quote-attrib {
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--ti-text-faint);
+  font-family: var(--ti-font-mono);
+}
+
+/* -------------------- Right form panel -------------------- */
+.ti-auth-form-side {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+}
+
+.ti-auth-card {
+  width: 100%;
+  max-width: 400px;
+  animation: ti-fade-up 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.ti-auth-brand > * {
+  animation: ti-fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.ti-auth-brand > *:nth-child(2) { animation-delay: 0.08s; }
+.ti-auth-brand > *:nth-child(3) { animation-delay: 0.16s; }
+
+@keyframes ti-fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.ti-field {
+  animation: ti-fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.ti-field:nth-of-type(1) { animation-delay: 0.05s; }
+.ti-field:nth-of-type(2) { animation-delay: 0.1s; }
+.ti-field:nth-of-type(3) { animation-delay: 0.15s; }
+.ti-field:nth-of-type(4) { animation-delay: 0.2s; }
+.ti-field:nth-of-type(5) { animation-delay: 0.25s; }
+
+.ti-auth-heading {
+  font-family: var(--ti-font-display);
+  font-size: 30px;
+  font-weight: 500;
+  margin: 0 0 6px;
+}
+
+.ti-auth-subtext {
+  color: var(--ti-text-muted);
+  font-size: 14.5px;
+  margin: 0 0 28px;
+}
+
+.ti-stitch-divider {
+  border: none;
+  border-top: 1px dashed var(--ti-border);
+  margin: 24px 0;
+}
+
+.ti-field {
+  margin-bottom: 18px;
+}
+
+.ti-field label {
+  display: block;
+  font-size: 12.5px;
+  font-family: var(--ti-font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--ti-text-muted);
+  margin-bottom: 7px;
+}
+
+.ti-field input,
+.ti-field select {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--ti-surface);
+  border: 1px solid var(--ti-border);
+  border-radius: var(--ti-radius);
+  padding: 11px 13px;
+  color: var(--ti-text);
+  font-family: var(--ti-font-body);
+  font-size: 14.5px;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ti-field input::placeholder {
+  color: var(--ti-text-faint);
+}
+
+.ti-field input:focus,
+.ti-field select:focus {
+  border-color: var(--ti-moss);
+  box-shadow: 0 0 0 3px rgba(143,185,150,0.15);
+}
+
+.ti-role-group {
+  display: flex;
+  gap: 10px;
+}
+
+.ti-role-pill {
+  flex: 1;
+  text-align: center;
+  padding: 11px 8px;
+  border-radius: var(--ti-radius);
+  border: 1px dashed var(--ti-border);
+  background: var(--ti-surface);
+  color: var(--ti-text-muted);
+  font-size: 13.5px;
+  font-family: var(--ti-font-mono);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.ti-role-pill.active {
+  border-style: solid;
+  border-color: var(--ti-moss);
+  color: var(--ti-moss);
+  background: rgba(143,185,150,0.08);
+}
+
+.ti-submit-btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: var(--ti-radius);
+  background: var(--ti-moss);
+  color: #0F1319;
+  font-weight: 600;
+  font-size: 14.5px;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.05s ease;
+  margin-top: 4px;
+}
+
+.ti-submit-btn:hover { background: #9FC7A5; }
+.ti-submit-btn:active { transform: scale(0.99); }
+.ti-submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.ti-switch-link {
+  margin-top: 22px;
+  text-align: center;
+  font-size: 13.5px;
+  color: var(--ti-text-muted);
+}
+
+.ti-switch-link a {
+  color: var(--ti-gold);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.ti-switch-link a:hover { text-decoration: underline; }
+
+.ti-error-banner {
+  background: rgba(226,114,91,0.1);
+  border: 1px solid rgba(226,114,91,0.35);
+  color: var(--ti-danger);
+  border-radius: var(--ti-radius);
+  padding: 10px 13px;
+  font-size: 13.5px;
+  margin-bottom: 18px;
+  animation: ti-shake 0.4s ease;
+}
+
+@keyframes ti-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.ti-submit-btn:disabled {
+  animation: ti-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes ti-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 0.85; }
+}
