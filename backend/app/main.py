@@ -45,9 +45,12 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
+cors_origins_env = os.getenv("CORS_ORIGINS", "*")
+cors_origins = [o.strip() for o in cors_origins_env.split(",")] if cors_origins_env != "*" else ["*"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -96,3 +99,4 @@ def root():
 @app.get("/api/health", tags=["Health"])
 def health_check():
     return {"success": True, "message": "API is running successfully."}
+

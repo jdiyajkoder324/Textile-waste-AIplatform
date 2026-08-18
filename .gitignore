@@ -8,3 +8,6 @@ frontend/node_modules/
 backend/.venv/
 venv/
 .venv/
+
+backend/uploads/
+backend/requirements.txt.backup
