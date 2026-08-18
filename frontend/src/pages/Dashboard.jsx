@@ -185,59 +185,9 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-paper text-ink-900 flex flex-col lg:flex-row">
-      {/* Sidebar navigation */}
-      <aside className="w-full lg:w-72 lg:sticky lg:top-0 lg:h-screen shrink-0 bg-paper-raised border-b lg:border-b-0 lg:border-r border-ink-900/[0.07] flex flex-col justify-between p-6">
-        <div>
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-fiber-teal/10 border border-fiber-teal/20 flex items-center justify-center shrink-0">
-              <Shirt className="w-5 h-5 text-fiber-amber" />
-            </div>
-            <div>
-              <h2 className="font-display text-lg leading-tight text-ink-900">TextileIntel</h2>
-              <p className="text-[11px] uppercase tracking-[0.14em] text-ink-400 leading-tight">Waste Management</p>
-            </div>
-          </div>
-
-          <div className="thread-divider my-5" />
-
-          <nav className="flex flex-col gap-1.5">
-            {navItems.map(({ key, label, icon: Icon, active, onClick }) => (
-              <button
-                key={key}
-                onClick={onClick}
-                className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-left transition-colors ${
-                  active
-                    ? "bg-fiber-amber/10 text-fiber-amber border border-fiber-amber/20"
-                    : "text-ink-600 border border-transparent hover:bg-fiber-teal/[0.06] hover:text-ink-900"
-                }`}
-              >
-                <Icon className="w-4 h-4 shrink-0" />
-                <span>{label}</span>
-              </button>
-            ))}
-          </nav>
-        </div>
-
-        <div className="pt-5 border-t border-ink-900/[0.07]">
-          <div className="flex items-center justify-between gap-3">
-            <div className="min-w-0">
-              <h4 className="text-sm font-semibold text-ink-900 truncate">{user?.name || "Loading..."}</h4>
-              <p className="text-[11px] text-ink-400">{user?.role || "Active Session"}</p>
-            </div>
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-ink-900/[0.08] text-ink-500 text-xs hover:bg-fiber-rust/10 hover:text-fiber-rust hover:border-fiber-rust/25 transition-colors shrink-0"
-            >
-              <LogOut className="w-3.5 h-3.5" />
-              Logout
-            </button>
-          </div>
-        </div>
-      </aside>
-
-      {/* Main content page area */}
-      <main className="flex-1 min-w-0 px-6 py-8 lg:px-10 lg:py-10">
+    <div className="text-ink-900">
+      {/* Page content — sidebar comes from DashboardLayout, not rendered here */}
+      <div className="px-6 py-8 lg:px-10 lg:py-10">
         <header className="flex flex-wrap items-start justify-between gap-4 mb-8">
           <div>
             <h1 className="font-display text-3xl text-ink-900 tracking-tight">Intelligence Dashboard</h1>
@@ -596,7 +546,7 @@ export default function Dashboard() {
             </section>
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 }

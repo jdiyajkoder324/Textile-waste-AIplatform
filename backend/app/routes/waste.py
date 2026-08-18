@@ -1,47 +1,36 @@
 """
 Milestone 1 — Waste batch CRUD + Inventory.
 
-Reconstructed to match:
-  - app/models/waste.py (the Waste model)
-  - frontend services/api.js: getWastes, createWaste, updateWaste, deleteWaste,
-    getInventory, uploadWasteImage
+Fixed version: uses the proper WasteCreate / WasteUpdate schemas
+(from app/schemas/waste.py) instead of a single strict WasteIn model.
+This is what was causing 422 errors on PUT /waste/{id} — the update
+endpoint was validating against a model that required batch_id, even
+though updates should only need to send the fields being changed.
 
-If you have a git history / backup of the ORIGINAL routes/waste.py, prefer
-that over this file — this is a best-effort reconstruction based on the
-Waste model's fields and what api.js expects the endpoints to look like.
+user_id fix: create_waste now wires the authenticated user via
+app.core.auth.get_current_user (the same dependency analytics.py uses),
+so every new batch is correctly attributed. Previously user_id was
+never set, which is why Manufacturer/Recycler/Admin dashboards — which
+filter by current_user.id — showed "No batches logged yet" even though
+batches existed in the table.
 """
 import os
 import uuid
-from datetime import datetime
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Query
-from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from app.database import get_db
+from app.core.auth import get_current_user
+from app.models.user import User
 from app.models.waste import Waste
+from app.schemas.waste import WasteCreate, WasteUpdate, WasteResponse, PaginatedWasteResponse
 
 router = APIRouter(prefix="/waste", tags=["Waste"])
 
 UPLOAD_DIR = "uploads/waste_images"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
-
-
-class WasteIn(BaseModel):
-    batch_id: str
-    fabric_type: str
-    source: Optional[str] = None
-    quantity: float
-    condition: str
-    collection_date: Optional[str] = None
-    image_path: Optional[str] = ""
-    status: Optional[str] = "Pending"
-    title: Optional[str] = None
-    description: Optional[str] = None
-    material: Optional[str] = None
-    color: Optional[str] = None
-    location: Optional[str] = None
 
 
 def _serialize(w: Waste) -> dict:
@@ -104,13 +93,41 @@ def list_waste(
     }
 
 
-@router.post("/")
-def create_waste(payload: WasteIn, db: Session = Depends(get_db)):
-    existing = db.query(Waste).filter(Waste.batch_id == payload.batch_id).first()
-    if existing:
-        raise HTTPException(status_code=400, detail=f"Batch ID '{payload.batch_id}' already exists")
+def _generate_batch_id(db: Session) -> str:
+    # e.g. TX-4821 style, matching the placeholder shown in the UI.
+    # Retries on the rare collision instead of trusting one random draw.
+    for _ in range(5):
+        candidate = f"TX-{uuid.uuid4().hex[:4].upper()}"
+        if not db.query(Waste).filter(Waste.batch_id == candidate).first():
+            return candidate
+    # Fallback: fully unique, can't collide.
+    return f"TX-{uuid.uuid4().hex[:8].upper()}"
 
-    waste = Waste(**payload.model_dump())
+
+@router.post("/")
+def create_waste(
+    payload: WasteCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    data = payload.model_dump()
+
+    # Always attribute the batch to whoever is logged in. This was
+    # previously missing entirely, so every batch got user_id=None and
+    # never showed up on the role dashboards (which filter by user_id).
+    data["user_id"] = current_user.id
+
+    # The DB column "batch_id" is NOT NULL, but the schema allows it to be
+    # omitted (e.g. from the Quick Log form). Auto-generate one instead of
+    # letting the insert hit an IntegrityError.
+    if not data.get("batch_id"):
+        data["batch_id"] = _generate_batch_id(db)
+    else:
+        existing = db.query(Waste).filter(Waste.batch_id == data["batch_id"]).first()
+        if existing:
+            raise HTTPException(status_code=400, detail=f"Batch ID '{data['batch_id']}' already exists")
+
+    waste = Waste(**data)
     db.add(waste)
     db.commit()
     db.refresh(waste)
@@ -118,12 +135,26 @@ def create_waste(payload: WasteIn, db: Session = Depends(get_db)):
 
 
 @router.put("/{waste_id}")
-def update_waste(waste_id: int, payload: WasteIn, db: Session = Depends(get_db)):
+def update_waste(waste_id: int, payload: WasteUpdate, db: Session = Depends(get_db)):
     waste = db.query(Waste).filter(Waste.id == waste_id).first()
     if not waste:
         raise HTTPException(status_code=404, detail="Waste batch not found")
 
-    for key, value in payload.model_dump().items():
+    # exclude_unset=True: only touch fields the client actually sent,
+    # so a partial edit (no batch_id, no source, etc.) doesn't wipe
+    # out existing values with None.
+    update_data = payload.model_dump(exclude_unset=True)
+
+    if "batch_id" in update_data and update_data["batch_id"]:
+        conflict = (
+            db.query(Waste)
+            .filter(Waste.batch_id == update_data["batch_id"], Waste.id != waste_id)
+            .first()
+        )
+        if conflict:
+            raise HTTPException(status_code=400, detail=f"Batch ID '{update_data['batch_id']}' already exists")
+
+    for key, value in update_data.items():
         setattr(waste, key, value)
 
     db.commit()

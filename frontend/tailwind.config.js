@@ -5,30 +5,29 @@ export default {
     extend: {
       colors: {
         paper: {
-          DEFAULT: '#F7F7F3',
+          DEFAULT: '#EAF4EF',
           raised: '#FFFFFF',
+        },
+        ink: {
+          900: '#1B2B24',
+          700: '#33453C',
+          600: '#54655C',
+          400: '#8B978F',
+          200: '#D6E0DA',
+          100: '#E8EEEA',
+        },
+        fiber: {
+          teal: '#1E9E6B',
+          amber: '#E8A33D',
+          moss: '#4C8DBF',
+          rust: '#C97B72',
+        },
+      },
+      boxShadow: {
+        'card': '0 1px 2px rgba(27,43,36,0.05), 0 8px 24px -12px rgba(27,43,36,0.12)',
+        'card-hover': '0 1px 2px rgba(27,43,36,0.06), 0 16px 36px -14px rgba(30,158,107,0.22)',
+      },
     },
-    ink: {
-      900: '#152520',
-      700: '#33443C',
-      600: '#56675F',
-      400: '#8A968F',
-      200: '#D8DDD9',
-      100: '#E9ECE9',
-    },
-    fiber: {
-      teal: '#1F6F5C',
-      amber: '#B9791F',
-      moss: '#4C7A46',
-      rust: '#B23B2E',
-    },
-  },
-  boxShadow: {
-    'card': '0 1px 2px rgba(21,37,32,0.04), 0 8px 24px -12px rgba(21,37,32,0.12)',
-    'card-hover': '0 1px 2px rgba(21,37,32,0.05), 0 16px 36px -14px rgba(31,111,92,0.22)',
-  },
-},
   },
   plugins: [],
 };
-
