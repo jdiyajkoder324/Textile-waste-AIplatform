@@ -73,6 +73,12 @@ async def validation_exception_handler(request, exc):
     logging.error("VALIDATION ERROR: %s", exc.errors())
     return JSONResponse(status_code=422, content={"detail": exc.errors()})
 
+@app.exception_handler(Exception)
+async def generic_exception_handler(request, exc):
+    logging.error("UNHANDLED ERROR: %s", exc, exc_info=True)
+    return JSONResponse(status_code=500, content={"detail": "Internal server error"})
+
+
 
 # --- Routers ---
 app.include_router(user_router, prefix="/user", tags=["User"])
