@@ -52,7 +52,7 @@ cors_origins = [o.strip() for o in cors_origins_env.split(",")] if cors_origins_
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://textileintel-frontend.onrender.com"],
+    allow_origins=["https://textileintel-frontend.onrender.com", "http://localhost:5173", "https://textileintel-frontend.onrender.com"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
