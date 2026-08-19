@@ -23,13 +23,8 @@ export default function Login() {
     setSubmitting(true);
     try {
       const data = await initiateLogin(email, password);
-      navigate("/verify-otp", {
-        state: {
-          otp_session_id: data.otp_session_id,
-          email_hint: data.email_hint,
-          expires_in_seconds: data.expires_in_seconds,
-        },
-      });
+      navigate("/dashboard");
+      
     } catch (err) {
       setError(err.response?.data?.detail || err.message || "Invalid email or password.");
     } finally {

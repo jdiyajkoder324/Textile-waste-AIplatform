@@ -31,11 +31,18 @@ export function AuthProvider({ children }) {
     bootstrap();
   }, []);
 
-  // Step 1 — email + password, triggers OTP send
+    // Login — email + password, directly returns token (OTP removed)
   const initiateLogin = async (email, password) => {
     const res = await loginStep1(email, password);
-    // res.data = { message, otp_session_id, email_hint, expires_in_seconds }
-    return res.data;
+    const { access_token } = res.data;
+
+    localStorage.setItem("token", access_token);
+    setToken(access_token);
+
+    const me = await api.get("/user/me");
+    setUser(me.data);
+
+    return me.data;
   };
 
   // Step 2 — call after user enters OTP

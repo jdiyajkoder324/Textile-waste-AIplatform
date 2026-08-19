@@ -40,21 +40,16 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     return create_user(db, user)
 
 
-@router.post("/login", response_model=LoginStep1Response)
+
+@router.post("/login", response_model=TokenResponse)
 def login(payload: UserLogin, db: Session = Depends(get_db)):
     db_user = authenticate_user(db, payload.email, payload.password)
 
     if not db_user:
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
-    otp_record = create_and_send_otp(db, db_user, purpose=OTPPurpose.LOGIN_2FA)
-
-    return LoginStep1Response(
-        message="OTP sent to your registered email",
-        otp_session_id=otp_record.id,
-        email_hint=mask_email(db_user.email),
-        expires_in_seconds=300,
-    )
+    access_token = create_access_token({"sub": db_user.email})
+    return TokenResponse(access_token=access_token)
 
 
 @router.post("/verify-otp", response_model=TokenResponse)
