@@ -2,7 +2,7 @@ import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
   LayoutDashboard, ScanLine, Package, History,
-  Leaf, Sparkles, FileText, User, LogOut, BarChart3,
+  Leaf, Sparkles, FileText, User, LogOut, BarChart3, Users,
 } from "lucide-react";
 import NotificationBell from "../components/NotificationBell";
 
@@ -16,23 +16,23 @@ export default function DashboardLayout() {
   };
 
   const roleAnalyticsItem =
-    user?.role === "Recycler" ? { to: "/analytics/recycler", label: "Facility Analytics", icon: BarChart3 } :
-    user?.role === "Industry" ? { to: "/analytics/manufacturer", label: "Production Analytics", icon: BarChart3 } :
-    user?.role === "Admin" ? { to: "/analytics/admin", label: "Platform Analytics", icon: BarChart3 } :
-    null;
+  user?.role === "Recycler" ? { to: "/analytics/recycler", label: "Facility Analytics", icon: BarChart3 } :
+  user?.role === "Industry" ? { to: "/analytics/manufacturer", label: "Manufacturer Dashboard", icon: BarChart3 } :
+  user?.role === "Admin" ? { to: "/analytics/admin", label: "Admin Dashboard", icon: BarChart3 } :
+  null;
 
   const NAV_ITEMS = [
-    { to: "/dashboard", label: "Overview", icon: LayoutDashboard },
-    { to: "/upload", label: "Analyze Textile", icon: ScanLine },
-    { to: "/inventory", label: "Inventory", icon: Package },
-    { to: "/history", label: "Analysis History", icon: History },
-    { to: "/sustainability", label: "Sustainability", icon: Leaf },
-    { to: "/sustainability/recommendations", label: "Recommendations", icon: Sparkles },
-    { to: "/reports", label: "Reports", icon: FileText },
-    ...(roleAnalyticsItem ? [roleAnalyticsItem] : []),
-    { to: "/profile", label: "Profile", icon: User },
-  ];
-
+  { to: "/dashboard", label: "Overview", icon: LayoutDashboard },
+  { to: "/upload", label: "Analyze Textile", icon: ScanLine },
+  { to: "/inventory", label: "Inventory", icon: Package },
+  { to: "/history", label: "Analysis History", icon: History },
+  { to: "/sustainability", label: "Sustainability", icon: Leaf },
+  { to: "/sustainability/recommendations", label: "Recommendations", icon: Sparkles },
+  { to: "/reports", label: "Reports", icon: FileText },
+  ...(roleAnalyticsItem ? [roleAnalyticsItem] : []),
+  ...(user?.role === "Admin" ? [{ to: "/admin/users", label: "User Management", icon: Users }] : []),
+  { to: "/profile", label: "Profile", icon: User },
+];
   return (
     <div className="min-h-screen bg-paper flex">
       {/* Sidebar */}

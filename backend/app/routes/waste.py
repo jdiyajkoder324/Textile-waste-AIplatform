@@ -133,7 +133,7 @@ def create_waste(
     db.refresh(waste)
     return _serialize(waste)
 
-
+'''
 @router.put("/{waste_id}")
 def update_waste(waste_id: int, payload: WasteUpdate, db: Session = Depends(get_db)):
     waste = db.query(Waste).filter(Waste.id == waste_id).first()
@@ -159,10 +159,10 @@ def update_waste(waste_id: int, payload: WasteUpdate, db: Session = Depends(get_
 
     db.commit()
     db.refresh(waste)
-    return _serialize(waste)
+    return _serialize(waste)'''
 
 
-@router.delete("/{waste_id}")
+'''@router.delete("/{waste_id}")
 def delete_waste(waste_id: int, db: Session = Depends(get_db)):
     waste = db.query(Waste).filter(Waste.id == waste_id).first()
     if not waste:
@@ -170,7 +170,7 @@ def delete_waste(waste_id: int, db: Session = Depends(get_db)):
 
     db.delete(waste)
     db.commit()
-    return {"success": True, "message": "Waste batch deleted"}
+    return {"success": True, "message": "Waste batch deleted"}'''
 
 
 @router.post("/upload-image")
@@ -184,3 +184,55 @@ async def upload_waste_image(file: UploadFile = File(...)):
         f.write(content)
 
     return {"image_path": f"/uploads/waste_images/{unique_name}"}
+
+@router.put("/{waste_id}")
+def update_waste(
+    waste_id: int,
+    payload: WasteUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    waste = db.query(Waste).filter(Waste.id == waste_id).first()
+    if not waste:
+        raise HTTPException(status_code=404, detail="Waste batch not found")
+
+    # Only the batch owner or an Admin can edit it.
+    if current_user.role != "Admin" and waste.user_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized to edit this batch")
+
+    update_data = payload.model_dump(exclude_unset=True)
+
+    if "batch_id" in update_data and update_data["batch_id"]:
+        conflict = (
+            db.query(Waste)
+            .filter(Waste.batch_id == update_data["batch_id"], Waste.id != waste_id)
+            .first()
+        )
+        if conflict:
+            raise HTTPException(status_code=400, detail=f"Batch ID '{update_data['batch_id']}' already exists")
+
+    for key, value in update_data.items():
+        setattr(waste, key, value)
+
+    db.commit()
+    db.refresh(waste)
+    return _serialize(waste)
+
+
+@router.delete("/{waste_id}")
+def delete_waste(
+    waste_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    waste = db.query(Waste).filter(Waste.id == waste_id).first()
+    if not waste:
+        raise HTTPException(status_code=404, detail="Waste batch not found")
+
+    # Only the batch owner or an Admin can delete it.
+    if current_user.role != "Admin" and waste.user_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized to delete this batch")
+
+    db.delete(waste)
+    db.commit()
+    return {"success": True, "message": "Waste batch deleted"}

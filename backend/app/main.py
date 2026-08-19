@@ -9,6 +9,8 @@ from fastapi.staticfiles import StaticFiles
 from app.routes.analytics import router as analytics_router
 from app.routes.notifications import router as notifications_router
 from app.routes.reports2 import router as reports_router
+from app.routes.admin_users import router as admin_users_router
+
 
 
 
@@ -50,7 +52,7 @@ cors_origins = [o.strip() for o in cors_origins_env.split(",")] if cors_origins_
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://textile-waste-aiplatf.onrender.com"],
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -80,7 +82,7 @@ app.include_router(sustainability_router)
 app.include_router(analytics_router)
 app.include_router(notifications_router)
 app.include_router(reports_router)
-
+app.include_router(admin_users_router)
 # Serve uploaded waste images at /uploads/...
 os.makedirs("uploads/waste_images", exist_ok=True)
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")

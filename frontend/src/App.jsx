@@ -23,6 +23,8 @@ import WasteScoringPage from "./pages/WasteScoringPage";
 import RecommendationPage from "./pages/RecommendationPage";
 //import SustainabilityReportPage from "./pages/SustainabilityReportPage";
 import Profile from "./pages/Profile";
+import AdminUserManagement from "./pages/AdminUserManagement";
+
 
 import RecyclerDashboard from "./pages/RecyclerDashboard";
 import ManufacturerDashboard from "./pages/ManufacturerDashboard";
@@ -68,6 +70,7 @@ function App() {
               <Route path="/analytics/manufacturer" element={<ManufacturerDashboard />} />
               <Route path="/analytics/admin" element={<AdminDashboard />} />
               <Route path="/reports" element={<ReportsCenter />} />
+              <Route path="/admin/users" element={<AdminUserManagement />} />
             </Route>
           </Routes>
         </BrowserRouter>

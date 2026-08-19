@@ -255,3 +255,14 @@ export const getReportHistory = (params) =>
 
 export const downloadPastReport = (id) =>
   api.get(`/api/reports/history/${id}/download`, { responseType: "blob" });
+
+
+// --- Admin User Management ---
+export const getAllUsers = () =>
+  api.get("/api/admin/users");
+
+export const updateUserRole = (userId, role) =>
+  api.put(`/api/admin/users/${userId}/role`, { role });
+
+export const deleteUserAccount = (userId) =>
+  api.delete(`/api/admin/users/${userId}`);
